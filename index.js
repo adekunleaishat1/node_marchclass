@@ -1,12 +1,16 @@
 const express = require("express")
 const app = express()
 const mongoose = require('mongoose')
+const cors = require("cors")
 require('dotenv').config()
 const ejs = require('ejs')
 app.set("view engine", "ejs")
-app.use(express.urlencoded({extended:true}))
+
 const userrouter = require('./Route/student.route')
 const adminrouter = require('./Route/admin.route')
+app.use(express.urlencoded({extended:true}))
+app.use(express.json())
+app.use(cors({origin:"*"}))
 app.use('/student', userrouter)
 app.use('/admin', adminrouter)
 
