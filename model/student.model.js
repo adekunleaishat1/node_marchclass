@@ -5,6 +5,7 @@ const studentschema =  mongoose.Schema({
     username:{type:String, required:true},
     email:{type:String, unique:true, required:true},
     password:{type:String, required:true},
+    profile:{type:String}
 })
 let saltRound = 10
 

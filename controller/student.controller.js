@@ -1,6 +1,6 @@
 const studentmodel = require('../model/student.model')
 const bcrypt = require('bcryptjs')
-
+const {cloudinary} = require('../utils/cloudinary')
 
 const studentsignup = async(req, res) =>{
 try {
@@ -35,17 +35,42 @@ const studentlogin = async(req, res)=>{
       if (!user) {
         res.status(407).send({message:"user does not exist , plsease sign up", status: false})
       }
+      
       console.log(user);
       const hashpassword = await bcrypt.compare(password , user.password)
         if (!hashpassword) {
             res.status(409).send({message:"invalid password", status: false}) 
         }
-        return res.status(200).send({message:"user login successful", status:true})
+        const useremail = user.email
+
+        return res.status(200).send({message:"user login successful", status:true,useremail })
 
    } catch (error) {
     console.log(error);
     res.status(500).send({message:"interal server error", status:false})
    }
+}
+
+const uploadimage = async (req, res) =>{
+   const {image , email} = req.body
+   console.log(image);
+  const uploder = await cloudinary.uploader.upload(image);
+  console.log(uploder.secure_url);
+  let myimage = uploder.secure_url
+  if (!uploder) {
+    res.status(400).send({message:"error occured", status: false})
+  }
+ const profileimage = await studentmodel.findOneAndUpdate(
+    {email: email},
+    {$set:{profile: myimage}},
+    {new: true}
+  )
+  if (!profileimage) {
+    res.status(405).send({message:"unable to update profile", status: false})
+  }
+
+  return res.status(200).send({message:"upload successful", status:true,myimage})
+
 }
 
 
@@ -57,4 +82,4 @@ const getlandingpage = (req, res)=>{
 }
 
 
-module.exports = {studentsignup, getlandingpage, getstudentsignup, studentlogin}
+module.exports = {studentsignup, getlandingpage, getstudentsignup, studentlogin, uploadimage}
