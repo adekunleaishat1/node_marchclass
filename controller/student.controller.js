@@ -1,6 +1,8 @@
 const studentmodel = require('../model/student.model')
 const bcrypt = require('bcryptjs')
 const {cloudinary} = require('../utils/cloudinary')
+const {VerifyToken} = require("../service/sessionservice") 
+const jwt = require("jsonwebtoken")
 
 const studentsignup = async(req, res) =>{
 try {
@@ -42,13 +44,49 @@ const studentlogin = async(req, res)=>{
             res.status(409).send({message:"invalid password", status: false}) 
         }
         const useremail = user.email
+        
+        jwt.sign({email}, "secret", {expiresIn:10},(err, result)=>{
+          if (err) {
+            console.log(err);
+            res.status(400).send({message:"unable to generate token", status: false}) 
+          }else{
+            console.log(result ,)
+            let token = result
+            return res.status(200).send({message:"user login successful", status:true,useremail, token })
+           
+          }
 
-        return res.status(200).send({message:"user login successful", status:true,useremail })
-
+        })
+       
    } catch (error) {
     console.log(error);
     res.status(500).send({message:"interal server error", status:false})
    }
+}
+
+const verifytoken = (req, res) =>{
+  try {
+    const token = req.headers.authorization.split(" ")[1]
+    console.log(token);
+   const email = VerifyToken(token)
+   console.log(email);
+    if(!email){
+      res.status(401).send({message:"unable to verify token", status: false})
+    }
+    return res.status(200).send({message:"token verified", status: true})
+  } catch (error) {
+    console.log(error);
+  }
+    
+    // jwt.verify(token, "secret",(err, result)=>{
+    //     if(err){
+    //       console.log(err);
+    //       res.status(401).send({message:"unable to verify token", status: false})
+    //     }else{
+    //       console.log(result);
+    //      return res.status(200).send({message:"token verified", status: true})
+    //     }
+    // })
 }
 
 const uploadimage = async (req, res) =>{
@@ -69,7 +107,7 @@ const uploadimage = async (req, res) =>{
     res.status(405).send({message:"unable to update profile", status: false})
   }
 
-  return res.status(200).send({message:"upload successful", status:true,myimage})
+  return res.status(200).send({message:"upload successful", status:true, myimage})
 
 }
 
@@ -82,4 +120,4 @@ const getlandingpage = (req, res)=>{
 }
 
 
-module.exports = {studentsignup, getlandingpage, getstudentsignup, studentlogin, uploadimage}
+module.exports = {studentsignup, getlandingpage, getstudentsignup, studentlogin, uploadimage,verifytoken }
