@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const {cloudinary} = require('../utils/cloudinary')
 const {VerifyToken} = require("../service/sessionservice") 
 const jwt = require("jsonwebtoken")
+const {uservalidation } = require("../middleware/uservalidation")
 
 const studentsignup = async(req, res) =>{
 try {
@@ -11,6 +12,10 @@ try {
     if (username == "" || password == "" || email == "") {
        res.status(402).send({message:"input fiels cannot be empty", status: false}) 
     }
+    //  const validate = await uservalidation.validate(req.body)
+    //  if (!validate) {
+    //   res.status(400).send({message:"unable to validate user", status:false})
+    //  }
     const existinguser = await studentmodel.findOne({email:email})
      console.log(existinguser);
      if (existinguser) {
@@ -23,7 +28,10 @@ try {
      return res.status(200).send({message:"user signed up successfully", status:true})
 } catch (error) {
     console.log(error);
-    res.status(500).send({message:"interal server error", status:false})
+    if (error) {
+      res.status(407).send({message:error.message})
+    }
+  return res.status(500).send({message:"interal server error", status:false})
 }
 }
 
