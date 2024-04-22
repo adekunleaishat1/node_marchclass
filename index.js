@@ -13,6 +13,7 @@ app.use(express.json({limit:"100mb"}))
 app.use(cors({origin:"*"}))
 app.use('/student', userrouter)
 app.use('/admin', adminrouter)
+ const socket = require("socket.io")
 
  
 
@@ -38,6 +39,17 @@ const connect = () =>{
 }
 connect()
 
-app.listen(port,()=>{
+const connection = app.listen(port,()=>{
    console.log("app started at port" + port);
+})
+let io = socket(connection, {
+   cors:{origin:"*"}
+})
+
+io.on("connection",(socket)=>{
+   console.log("A user connected successfully");
+   socket.on("newmessage",(message)=>{
+      console.log(message);
+      io.emit("receivemessage", message)
+   })
 })
