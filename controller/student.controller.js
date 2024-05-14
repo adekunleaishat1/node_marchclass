@@ -8,8 +8,8 @@ const {uservalidation } = require("../middleware/uservalidation")
 const studentsignup = async(req, res) =>{
 try {
     console.log( req.body, "body");
-    const {username, email, password} = req.body
-    if (username == "" || password == "" || email == "") {
+    const {username, firstname, lastname, email, password} = req.body
+    if (username == "" || password == "" || email == "" || lastname == "" || firstname == "") {
        res.status(402).send({message:"input fiels cannot be empty", status: false}) 
     }
     //  const validate = await uservalidation.validate(req.body)
