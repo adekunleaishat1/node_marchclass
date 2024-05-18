@@ -7,6 +7,7 @@ const ejs = require('ejs')
 app.set("view engine", "ejs")
 
 const userrouter = require('./Route/student.route')
+// const adminrouter = require('./Route/admin.route')
 const adminrouter = require('./Route/admin.route')
 app.use(express.urlencoded({extended:true, limit:"100mb"}))
 app.use(express.json({limit:"100mb"}))
@@ -15,28 +16,31 @@ app.use('/student', userrouter)
 app.use('/admin', adminrouter)
  const socket = require("socket.io")
 
- 
-
-// const studentschema =  mongoose.Schema({
-//     username:{type:String, required:true},
-//     email:{type:String, unique:true, required:true},
-//     password:{type:String, required:true},
-// })
-// const studentmodel = mongoose.model("student_collection", studentschema)
 
 const port = process.env.PORT || 5008
 const uri = process.env.MONGODB_URI
 
-const connect = () =>{
-    try {
-     const connected =  mongoose.connect(uri) 
-     if (connected) {
-        console.log("connected to database");
-     }
-    } catch (error) {
-       console.log(error);  
-    }
-}
+// const connect = () =>{
+//     try {
+//      const connected =  mongoose.connect(uri) 
+//      if (connected) {
+//         console.log("connected to database");
+//      }
+//     } catch (error) {
+//        console.log(error);  
+//     }
+// }
+
+const connect = async () => {
+   const uri = process.env.MONGO_URI;
+   try {
+     mongoose.set("strictQuery", false);
+     await mongoose.connect(uri);
+     console.log("MongoDB connected");
+   } catch (error) {
+     console.log(error);
+   }
+ };
 connect()
 
 const connection = app.listen(port,()=>{

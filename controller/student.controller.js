@@ -124,8 +124,12 @@ const getstudentsignup = (req, res) =>{
     res.render("signup")
 }
 const getlandingpage = (req, res)=>{
-    res.render("index")
-}
+  res.send([
+    { name: "devnonso", age: 22 },
+    { name: "exhibit", age: 20 },
+    { name: "obasi", age: 19 },
+  ]);
+};
 
 
 module.exports = {studentsignup, getlandingpage, getstudentsignup, studentlogin, uploadimage,verifytoken }

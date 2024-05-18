@@ -19,6 +19,6 @@ adminschema.pre("save", function (next) {
     })
 
 })
-const studentmodel = mongoose.model("admin_collection", adminschema)
+const adminmodel = mongoose.model("admin_collection", adminschema)
 
 module.exports = adminmodel

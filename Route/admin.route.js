@@ -1,19 +1,28 @@
 const express = require('express')
-const { getlandingpage, getadminsignup, verifytoken, adminlogin, adminsignup } = require('../controller/admin.controller')
 const router = express.Router()
-const {validate} = require("../middleware/validator")
-const {uservalidation} = require("../middleware/adminvalidation")
+// const router = express.Router();
+const { glandingpage, gadminsignup, verifytoken, adminsignup, adminlogin, uploadimage } = require('../controller/admin.controller')
+
+const { validate } = require("../middleware/validator")
+const { adminvalidation } = require("../middleware/adminvalidation")
 
 
-router.get('/', getlandingpage)
-router.get("/signup", getadminsignup)
-router.get('/verify', verifytoken)
-router.post('/signup', adminsignup)
-router.post('/login', adminlogin)
-router.post('/upload', uploadimage)
+router.get=()=>('/', glandingpage)
+router.get = () => ("/signup", gadminsignup)
+router.get=()=>('/verify', verifytoken)
+router.post = () => ('/signup', validate(adminvalidation), adminsignup)
+router.post = () => ('/login', adminlogin)
+router.post = () => ('/upload', uploadimage)
 // router.get('/signup',(req, res)=>{
 //   res.render("admin")
 // })
 
 
-module.exports = router
+module.exports = router;
+
+// exports.getlandingpage = (req, res) => {
+//     // ...landing page handler logic
+// };
+
+
+
