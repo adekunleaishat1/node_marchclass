@@ -7,14 +7,14 @@ const jwt = require("jsonwebtoken")
 const glandingpage = (req, res) => {
   res.send([
     {
-    name: "obasi",
-    age: "30"
-  },
-  {
-    firstname: "kule",
-    lastname: "obasi"
-  }
-])
+      name: "obasi",
+      age: "30"
+    },
+    {
+      firstname: "kule",
+      lastname: "obasi"
+    }
+  ])
 }
 
 
@@ -145,3 +145,4 @@ const geTdashboard = (req, res) => {
     }
   })
 }
+module.exports = { glandingpage, gadminsignup, verifytoken, uploadimage, adminlogin, adminsignup, geTdashboard, };

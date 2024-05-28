@@ -15,4 +15,4 @@ router.post('/upload', uploadimage)
 router.get('/verify', verifytoken)
 
 
-module.exports = router
+module.exports = router;

@@ -13,6 +13,7 @@ const userrouter = require('./Route/student.route')
 app.use(express.urlencoded({extended:true, limit:"100mb"}))
 app.use(express.json({limit:"100mb"}))
 app.use(cors({origin:"*"}))
+const { required } = require("nodemon/lib/config");
 app.use('/student', userrouter)
 app.use('/admin', adminrouter)
  const socket = require("socket.io")

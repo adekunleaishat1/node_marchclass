@@ -1,6 +1,5 @@
-const express = require('express')
+const express = require("express")
 const router = express.Router()
-// const router = express.Router();
 const { glandingpage, gadminsignup, verifytoken, adminsignup, adminlogin, uploadimage, geTdashboard } = require('../controller/admin.controller')
 
 const { validate } = require("../middleware/validator")
