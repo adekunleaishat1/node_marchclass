@@ -145,4 +145,4 @@ const geTdashboard = (req, res) => {
     }
   })
 }
-module.exports = { glandingpage, gadminsignup, verifytoken, uploadimage, adminlogin, adminsignup, geTdashboard, };
+module.exports = {glandingpage,gadminsignup,verifytoken,uploadimage,adminlogin,adminsignup,geTdashboard,};
