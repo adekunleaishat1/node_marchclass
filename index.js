@@ -6,9 +6,10 @@ require('dotenv').config()
 const ejs = require('ejs')
 app.set("view engine", "ejs")
 
-const userrouter = require('./Route/student.route')
+
 // const adminrouter = require('./Route/admin.route')
 const adminrouter = require('./Route/admin.route')
+const userrouter = require('./Route/student.route')
 app.use(express.urlencoded({extended:true, limit:"100mb"}))
 app.use(express.json({limit:"100mb"}))
 app.use(cors({origin:"*"}))

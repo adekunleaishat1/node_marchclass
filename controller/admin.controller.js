@@ -128,3 +128,20 @@ const adminsignup = async (req, res) => {
     return res.status(500).send({ message: "interal server error", status: false })
   }
 }
+
+const geTdashboard = (req, res) => {
+  let token = req.headers.authorization.split(" ")[1]
+  console.log(token, "token")
+  jwt.verify(token, "secretkey", (error, result) => {
+    if (error) {
+      console.log(error, "error");
+      res.status(401).send({ message: "you can never make it ", status: false })
+      //  return next(error)
+    } else {
+      let email = result.email
+      res.status(200).send({ message: "congrate", status: true, email: email })
+      console.log(result)
+
+    }
+  })
+}

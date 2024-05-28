@@ -1,5 +1,6 @@
 const studentmodel = require('../model/student.model')
-const bcrypt = require('bcryptjs')
+// const bcrypt = require('bcryptjs')
+const bcryptjs = require("bcryptjs");
 const {cloudinary} = require('../utils/cloudinary')
 const {VerifyToken} = require("../service/sessionservice") 
 const jwt = require("jsonwebtoken")
@@ -26,6 +27,7 @@ try {
         res.status(409).send({message:"unable to save user", status:false})
      }
      return res.status(200).send({message:"user signed up successfully", status:true})
+     console.log("Details has saved to database");
 } catch (error) {
     console.log(error);
     if (error) {
@@ -35,42 +37,73 @@ try {
 }
 }
 
-const studentlogin = async(req, res)=>{
-   try {
-       const {email , password } = req.body
-       if (email == "" || password == "") {
-        res.status(402).send({message:"input field cannot be empty", status: false})
-       }
-      const user = await studentmodel.findOne({email:email})
-      if (!user) {
-        res.status(407).send({message:"user does not exist , plsease sign up", status: false})
-      }
-      
-      console.log(user);
-      const hashpassword = await bcrypt.compare(password , user.password)
-        if (!hashpassword) {
-            res.status(409).send({message:"invalid password", status: false}) 
-        }
-        const useremail = user.email
-        
-        jwt.sign({email}, "secret", {expiresIn:10},(err, result)=>{
-          if (err) {
-            console.log(err);
-            res.status(400).send({message:"unable to generate token", status: false}) 
-          }else{
-            console.log(result ,)
-            let token = result
-            return res.status(200).send({message:"user login successful", status:true,useremail, token })
-           
+const studentlogin = async (req, res, next) => {
+  let email = req.body.email;
+  let password = req.body.password;
+  // let secret = secret;
+  let firstname = req.body.firstname
+  try {
+    await studentmodel.find({ email: email }).then((result) => {
+      if (result.length === 0) {
+        res.status(404).send({ message: "You don't have an account with us", status: false })
+      } else {
+        bcryptjs.compare(password, result[0].password).then((result2) => {
+          console.log(result2)
+          console.log(password);
+          if (result2) {
+            const token = jwt.sign({ email }, "secretkey", { expiresIn: 90 })
+            console.log(token)
+            res.status(200).send({ message: "Welcome" + result[0].firstname, status: true, token })
+            res.send.body
+          } else {
+            res.status(401).send({ message: "Invalid password", status: false })
           }
-
         })
-       
-   } catch (error) {
-    console.log(error);
-    res.status(500).send({message:"interal server error", status:false})
-   }
+      }
+    }).catch((error) => {
+      console.log(error)
+      res.status(500).send({ message: "Sign in failed", status: false })
+    })
+  } catch (error) {
+    return next(error)
+  }
 }
+// const studentlogin = async(req, res)=>{
+//    try {
+//        const {email , password } = req.body
+//        if (email == "" || password == "") {
+//         res.status(402).send({message:"input field cannot be empty", status: false})
+//        }
+//       const user = await studentmodel.findOne({email:email})
+//       if (!user) {
+//         res.status(407).send({message:"user does not exist , plsease sign up", status: false})
+//       }
+      
+//       console.log(user);
+//       const hashpassword = await bcrypt.compare(password , user.password)
+//         if (!hashpassword) {
+//             res.status(409).send({message:"invalid password", status: false}) 
+//         }
+//         const useremail = user.email
+        
+//         jwt.sign({email}, "secret", {expiresIn:40},(err, result)=>{
+//           if (err) {
+//             console.log(err);
+//             res.status(400).send({message:"unable to generate token", status: false}) 
+//           }else{
+//             console.log(result ,)
+//             let token = result
+//             return res.status(200).send({message:"user login successful", status:true,useremail, token })
+//            res.send.body
+//           }
+
+//         })
+       
+//    } catch (error) {
+//     console.log(error);
+//     res.status(500).send({message:"interal server error", status:false})
+//    }
+// }
 
 const verifytoken = (req, res) =>{
   try {
@@ -119,6 +152,22 @@ const uploadimage = async (req, res) =>{
 
 }
 
+const geTdashboard = (req, res) => {
+  let token = req.headers.authorization.split(" ")[1]
+  console.log(token, "token")
+  jwt.verify(token, "secretkey", (error, result) => {
+    if (error) {
+      console.log(error, "error");
+      res.status(401).send({ message: "you can never make it ", status: false })
+      //  return next(error)
+    } else {
+      let email = result.email
+      res.status(200).send({ message: "congrate", status: true, email: email })
+      console.log(result)
+
+    }
+  })
+}
 
 const getstudentsignup = (req, res) =>{
     res.render("signup")

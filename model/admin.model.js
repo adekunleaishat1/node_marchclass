@@ -5,7 +5,8 @@ const adminschema = mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
-    profile: { type: String }
+    profile: { type: String },
+    registrationDate : { type: Date,default:Date.now()},
 })
 let saltRound = 10
 
