@@ -71,17 +71,17 @@ const adminlogin = async (req, res) => {
     if (email == "" || password == "") {
       res.status(402).send({ message: "input field cannot be empty", status: false })
     }
-    const user = await adminmodel.findOne({ email: email })
-    if (!user) {
+    const admin = await adminmodel.findOne({ email: email })
+    if (!admin) {
       res.status(407).send({ message: "user does not exist , plsease sign up", status: false })
     }
 
-    console.log(user);
+    console.log(admin);
     const hashpassword = await bcrypt.compare(password, user.password)
     if (!hashpassword) {
       res.status(409).send({ message: "invalid password", status: false })
     }
-    const useremail = user.email
+    const adminemail = admin.email
 
     jwt.sign({ email }, "secret", { expiresIn: 30 }, (err, result) => {
       if (err) {
@@ -115,7 +115,7 @@ const adminsignup = async (req, res) => {
     if (existinguser) {
       res.status(405).send({ message: "user already exist", status: false })
     }
-    const student = await adminmodel.create({ username, email, password })
+    const admin = await adminmodel.create({ username, email, password })
     if (!admin) {
       res.status(409).send({ message: "unable to save user", status: false })
     }
