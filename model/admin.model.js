@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require("bcryptjs")
 
-const studentschema = mongoose.Schema({
+const adminschema = mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
@@ -10,7 +10,7 @@ const studentschema = mongoose.Schema({
 })
 let saltRound = 10
 
-studentschema.pre("save", function (next) {
+adminschema.pre("save", function (next) {
     console.log(this.password);
     bcrypt.hash(this.password, saltRound).then((hashpassword) => {
         this.password = hashpassword
@@ -20,7 +20,6 @@ studentschema.pre("save", function (next) {
     })
 
 })
-const studentmodel = mongoose.model("student_collection", studentschema)
-// const studentModel = mongoose.models.student_collections || mongoose.model("student_collections", );
+const adminmodel = mongoose.model("admin_collection", adminschema)
 
-module.exports = studentmodel
+module.exports = adminmodel
